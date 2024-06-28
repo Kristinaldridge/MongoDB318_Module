@@ -11,7 +11,7 @@ const PORT = 3000;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static('stylesheets'));
 
 //this is for put and delete methods to alternate
 app.use(methodOverride('_method'));
