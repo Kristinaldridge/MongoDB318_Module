@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import fs from 'fs/promises'; 
 import methodOverride from 'method-override';
 
+
 const app = express();
 const PORT = 3000;
 
@@ -12,16 +13,18 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-//this is for put and delete methods
+//this is for put and delete methods to alternate
 app.use(methodOverride('_method'));
+
+
 
 let nextPostId = 15;
 
 function generateId(){
   return nextPostId++;
-}
+};
 
-// gGet route
+// my gGet route
 app.get('/', async (req, res) => {
   try {
     const data = await fs.readFile('./data/posts.json', 'utf8');
