@@ -1,15 +1,15 @@
 # MongoDB318_Module
 
-#Blog Site
+# Blog Site
 This is a simple blog site built using Express.js and EJS templates.
 
-##Features
+## Features
 Compose Posts: Create new blog posts with a title and content.
 Edit and Delete Posts: Modify or remove existing posts.
 View All Posts: See all blog posts on the home page.
 Responsive Design: Basic styling to ensure readability and usability.
 
-##Usage
+## Usage
 Compose a new post:
 
 Click on the "Compose" button on the homepage.
@@ -29,6 +29,6 @@ Click on the "Delete" button below a post on the homepage.
 Confirm the deletion.
 
 
-#Contributing
+# Contributing
 Contributions are welcome! Feel free to fork the repository and submit pull requests.
 
