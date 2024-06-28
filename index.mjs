@@ -42,6 +42,11 @@ app.get('/compose', (req, res) => {
 
 app.post('/compose', async (req, res) => {
   const { title, content } = req.body;
+
+  if (!title || !content) {
+    return res.status(400).send('Title and content are required.');
+  }
+
   const newPost = { 
     id:generateId(),
     title, 
