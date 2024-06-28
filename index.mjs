@@ -1,17 +1,18 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import fs from 'fs/promises'; // Using fs.promises for async file operations
+import fs from 'fs/promises'; 
 import methodOverride from 'method-override';
 
 const app = express();
 const PORT = 3000;
 
 
-// Middleware
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
-// After app initialization
+
+//this is for put and delete methods
 app.use(methodOverride('_method'));
 
 // gGet route
@@ -47,7 +48,7 @@ app.post('/compose', async (req, res) => {
 });
 
 
-//Patch request 
+//Put request 
 app.get('/posts/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -65,6 +66,33 @@ app.get('/posts/:id', async (req, res) => {
     res.status(500).send('Error reading posts.');
   }
 });
+
+app.put('/posts/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+
+  try {
+    
+    const data = await fs.readFile('./data/posts.json', 'utf8');
+    let posts = JSON.parse(data);
+    const index = posts.findIndex(post => post.id === parseInt(id));
+
+    if (index !== -1) {
+      posts[index].title = title;
+      posts[index].content = content;
+
+      await fs.writeFile('./data/posts.json', JSON.stringify(posts, null, 2));
+
+      res.redirect('/');
+    } else {
+      res.status(404).send('Post not found.');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating post.');
+  }
+});
+
 
 app.get('/posts/:id/edit', async (req, res) => {
   const { id } = req.params;
@@ -84,30 +112,6 @@ app.get('/posts/:id/edit', async (req, res) => {
   }
 });
 
-app.patch('/posts/:id', async (req, res) => {
-  const { id } = req.params;
-  const { title, content } = req.body;
-
-  try {
-    const data = await fs.readFile('./data/posts.json', 'utf8');
-    let posts = JSON.parse(data);
-    const index = posts.findIndex(p => p.id === parseInt(id));
-    if (index !== -1) {
-      posts[index].title = title;
-      posts[index].content = content;
-      await fs.writeFile('./data/posts.json', JSON.stringify(posts, null, 2));
-      res.redirect(`/posts/${id}`);
-    } else {
-      res.status(404).send('Post not found.');
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error updating post.');
-  }
-});
-
-
-
 
 // Delete request
 app.post('/delete/:id', async (req, res) => {
@@ -117,20 +121,17 @@ app.post('/delete/:id', async (req, res) => {
     const data = await fs.readFile('./data/posts.json', 'utf8');
     let posts = JSON.parse(data);
 
-    // Find the index of the post with matching id
+    
     const index = posts.findIndex(post => post.id === parseInt(id));
 
     if (index !== -1) {
-      // Remove the post from the array
       posts.splice(index, 1);
 
-      // Write the updated posts array back to the file
       await fs.writeFile('./data/posts.json', JSON.stringify(posts, null, 2));
 
       console.log(`Post with id ${id} successfully deleted.`);
       res.redirect('/');
     } else {
-      // If post with given id is not found, send a 404 status
       res.status(404).send('Post not found.');
     }
   } catch (err) {
