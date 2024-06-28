@@ -15,6 +15,12 @@ app.use(express.static('public'));
 //this is for put and delete methods
 app.use(methodOverride('_method'));
 
+let nextPostId = 15;
+
+function generateId(){
+  return nextPostId++;
+}
+
 // gGet route
 app.get('/', async (req, res) => {
   try {
@@ -33,7 +39,10 @@ app.get('/compose', (req, res) => {
 
 app.post('/compose', async (req, res) => {
   const { title, content } = req.body;
-  const newPost = { title, content };
+  const newPost = { 
+    id:generateId(),
+    title, 
+    content };
 
   try {
     const data = await fs.readFile('./data/posts.json', 'utf8');
